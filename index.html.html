@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JuSt World Cup 2K26</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pink:#ff44a0;--blue:#0095ff;--dark:#06091a;--text:#f0f0f8;--muted:rgba(255,255,255,0.45);--gold:#ffd700;--silver:#c0c0c0;--bronze:#cd7f32}
+body{font-family:'Montserrat',Arial,sans-serif;background:var(--dark);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,0) 0,rgba(255,255,255,0) 60px,rgba(255,255,255,0.015) 60px,rgba(255,255,255,0.015) 120px),
+  linear-gradient(160deg,#06091a 0%,#0b1240 40%,#180828 70%,#06091a 100%)}
+.field{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
+  background:radial-gradient(ellipse 55% 22% at 50% 50%,transparent 55%,white 56%,white 58%,transparent 59%),
+  linear-gradient(90deg,transparent 49.6%,white 49.6%,white 50.4%,transparent 50.4%)}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 20px 60px}
+
+header{text-align:center;padding:40px 0 28px}
+.ball{font-size:56px;display:inline-block;animation:roll 3s linear infinite;margin-bottom:10px}
+@keyframes roll{0%{transform:rotate(0deg) translateX(0)}25%{transform:rotate(90deg) translateX(7px)}50%{transform:rotate(180deg) translateX(0)}75%{transform:rotate(270deg) translateX(-7px)}100%{transform:rotate(360deg) translateX(0)}}
+.js-label{font-size:.72rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(90deg,var(--pink),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1{font-size:clamp(1.8rem,5vw,3.5rem);font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,#fff 0%,#e0e0ff 35%,var(--pink) 70%,var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin:4px 0 8px}
+.sub{font-size:.8rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.maj-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 0;flex-wrap:wrap}
+.maj-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 14px;font-size:.76rem;font-weight:600;color:var(--muted)}
+.maj-pill span{color:var(--pink);font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:linear-gradient(135deg,var(--pink),#cc0077);color:white;padding:12px 28px;border-radius:50px;font-weight:700;font-size:.95rem;text-decoration:none;box-shadow:0 4px 24px rgba(255,68,160,.5);transition:transform .2s,box-shadow .2s}
+.badge:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(255,68,160,.7)}
+.badge .code{background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;letter-spacing:2px}
+.scoreboard{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.score-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 14px;font-size:.76rem;font-weight:600;color:var(--muted)}
+.score-pill span{color:var(--pink);font-weight:700}
+
+.tabs{display:flex;justify-content:center;gap:8px;margin:28px 0 24px;flex-wrap:wrap}
+.tab{padding:9px 22px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--muted);font-family:'Montserrat',Arial,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
+.tab:hover{border-color:var(--pink);color:var(--pink)}
+.tab.on{background:linear-gradient(135deg,var(--pink),#cc0077);border-color:var(--pink);color:white;box-shadow:0 4px 20px rgba(255,68,160,.4)}
+.view{display:none}.view.on{display:block}
+
+/* PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:0 0 32px;padding:0 10px}
+.pod{flex:1;max-width:220px;text-align:center}
+.pod-base{border-radius:14px 14px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:16px 10px 20px;position:relative;overflow:hidden}
+.pod-base::before{content:'';position:absolute;inset:0;opacity:.15;background:linear-gradient(180deg,white,transparent)}
+.pod-1 .pod-base{height:180px;background:linear-gradient(180deg,rgba(255,215,0,.3),rgba(255,215,0,.08));border:1px solid rgba(255,215,0,.4)}
+.pod-2 .pod-base{height:140px;background:linear-gradient(180deg,rgba(192,192,192,.25),rgba(192,192,192,.06));border:1px solid rgba(192,192,192,.3)}
+.pod-3 .pod-base{height:110px;background:linear-gradient(180deg,rgba(205,127,50,.25),rgba(205,127,50,.06));border:1px solid rgba(205,127,50,.3)}
+.pod-rank{font-size:1.6rem;margin-bottom:4px}.pod-name{font-size:.88rem;font-weight:900;color:white;margin-bottom:4px}
+.pod-score{font-size:1.1rem;font-weight:700;color:var(--gold)}.pod-label{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.rank-table{width:100%;border-collapse:collapse}
+.rank-table thead th{padding:10px 14px;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+.rank-row td{padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.93rem;vertical-align:middle}
+.rank-num{font-weight:900;font-size:1rem}.r1{color:var(--gold)}.r2{color:var(--silver)}.r3{color:var(--bronze)}
+.rank-name{font-weight:700}.rank-score{text-align:right;font-weight:900;color:white}
+.rank-evo{text-align:right;font-size:.9rem}
+.evo-up{color:#00e676}.evo-down{color:#ff5252}.evo-same{color:var(--muted)}
+.bar-cell{padding:3px 14px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.bar-wrap{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.16,1,.3,1);background:linear-gradient(90deg,var(--pink),var(--blue))}
+
+/* FAQ */
+.search-box{margin:0 0 22px;position:relative}
+.search-box::before{content:"🔍";position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none}
+#search{width:100%;padding:14px 18px 14px 46px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;color:var(--text);font-family:'Montserrat',Arial,sans-serif;font-size:.97rem;outline:none;transition:border-color .2s,box-shadow .2s}
+#search::placeholder{color:rgba(255,255,255,.3)}
+#search:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,68,160,.18)}
+.section-title{display:flex;align-items:center;gap:10px;font-size:.74rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:28px 0 12px;color:rgba(255,255,255,.5)}
+.section-title::before{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,68,160,.6),transparent)}
+.section-title::after{content:"";flex:1;height:1px;background:linear-gradient(270deg,rgba(0,149,255,.6),transparent)}
+.item{background:rgba(15,18,50,.92);border:1px solid rgba(255,68,160,.18);border-radius:14px;margin-bottom:9px;overflow:hidden;transition:border-color .2s,box-shadow .2s;backdrop-filter:blur(4px)}
+.item:hover{border-color:rgba(255,68,160,.5);box-shadow:0 4px 28px rgba(255,68,160,.12)}
+.item button{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:17px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-family:'Montserrat',Arial,sans-serif;font-size:.97rem;font-weight:700;color:#fff;line-height:1.4;transition:background .15s}
+.item button:hover{background:rgba(255,68,160,.06)}
+.arrow{flex-shrink:0;width:26px;height:26px;margin-top:1px;background:linear-gradient(135deg,var(--pink),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:white;font-weight:900;transition:transform .25s}
+.arrow.open{transform:rotate(180deg)}
+.answer{display:none;padding:14px 20px 18px;border-top:1px solid rgba(255,68,160,.12);background:rgba(8,10,32,.7);font-size:.93rem;line-height:1.78;color:#d8daf0}
+.answer.open{display:block}
+.answer strong{color:#fff}.answer a{color:#ff88c8;text-decoration:none}.answer a:hover{text-decoration:underline}
+.answer ul{margin:8px 0 0 18px}.answer li{margin-bottom:5px}
+.hl{background:linear-gradient(135deg,rgba(255,68,160,.25),rgba(0,149,255,.18));border:1px solid rgba(255,68,160,.4);color:#ffaadd;padding:1px 9px;border-radius:6px;font-weight:700;font-size:.9em}
+
+/* ADMIN verrou */
+.lock-overlay{position:fixed;inset:0;z-index:100;background:rgba(6,9,26,.97);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.lock-box{background:rgba(15,18,50,.98);border:1px solid rgba(255,68,160,.3);border-radius:20px;padding:36px 40px;text-align:center;max-width:360px;width:90%}
+.lock-icon{font-size:2.5rem;margin-bottom:12px}.lock-title{font-size:1.1rem;font-weight:900;margin-bottom:6px}
+.lock-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px}
+.lock-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:white;font-family:'Montserrat',Arial,sans-serif;font-size:1rem;text-align:center;letter-spacing:4px;outline:none;transition:border-color .2s}
+.lock-input:focus{border-color:var(--pink)}
+.lock-btn{margin-top:14px;width:100%;padding:12px;background:linear-gradient(135deg,var(--pink),#cc0077);color:white;border:none;border-radius:50px;font-family:'Montserrat',Arial,sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .2s}
+.lock-btn:hover{transform:translateY(-2px)}
+.lock-err{color:#ff5252;font-size:.82rem;margin-top:8px;min-height:18px}
+.lock-back{padding:10px 28px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:50px;font-family:'Montserrat',Arial,sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s}
+.lock-back:hover{border-color:var(--pink);color:var(--pink)}
+
+/* ADMIN panneau */
+.admin-box{background:rgba(15,18,50,.95);border:1px solid rgba(255,68,160,.2);border-radius:16px;padding:28px;margin-bottom:20px}
+.admin-section-title{font-size:.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--pink);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,68,160,.15)}
+.admin-meta{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.admin-meta label{font-size:.82rem;font-weight:600;color:var(--muted);white-space:nowrap}
+.inp{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:9px 13px;color:white;font-family:'Montserrat',Arial,sans-serif;font-size:.88rem;outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--pink)}
+.admin-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+.admin-table th{padding:8px 12px;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+.admin-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.admin-table td:first-child{font-size:.86rem;font-weight:700;color:white;white-space:nowrap;padding-left:4px;width:150px}
+.inp-sm{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:white;font-family:'Montserrat',Arial,sans-serif;font-size:.86rem;outline:none;transition:border-color .2s}
+.inp-sm:focus{border-color:var(--pink)}
+select.inp-sm{cursor:pointer}
+.btn-update{padding:13px 36px;background:linear-gradient(135deg,var(--pink),#cc0077);color:white;border:none;border-radius:50px;font-family:'Montserrat',Arial,sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(255,68,160,.4)}
+.btn-update:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,68,160,.6)}
+
+footer{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.8rem}
+footer a{color:var(--pink);text-decoration:none}
+@media(max-width:600px){.podium{gap:6px}.admin-table td:first-child{width:90px;font-size:.78rem}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="field"></div>
+
+<!-- VERROU ADMIN -->
+<div class="lock-overlay" id="lock-overlay" style="display:none">
+  <div class="lock-box">
+    <div class="lock-icon">&#128274;</div>
+    <div class="lock-title">Acc&egrave;s Admin</div>
+    <div class="lock-sub">R&eacute;serv&eacute; &agrave; Marion &amp; Donald</div>
+    <input class="lock-input" type="password" id="pwd-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')checkPwd()">
+    <div class="lock-err" id="pwd-err"></div>
+    <button class="lock-btn" onclick="checkPwd()">Acc&eacute;der &rarr;</button>
+  </div>
+  <button class="lock-back" onclick="closeLock()">&#8592; Retour au classement</button>
+</div>
+
+<div class="wrap">
+<header>
+  <div class="ball">&#9917;</div>
+  <div class="js-label">Julhiet Sterwen</div>
+  <h1>JuSt World Cup 2K26</h1>
+  <p class="sub">Classement &nbsp;&middot;&nbsp; FAQ &nbsp;&middot;&nbsp; Mon Petit Prono</p>
+  <a class="badge" href="https://mpp.go.link/8ZnpI" target="_blank">&#9917; Rejoindre la ligue &nbsp;&rarr;&nbsp; <span class="code">UCA3EX68</span></a>
+  <div class="scoreboard">
+    <div class="score-pill">&#127482;&#127480; &#127464;&#127462; &#127474;&#127485;</div>
+    <div class="score-pill"><span>104</span> matchs</div>
+    <div class="score-pill"><span>48</span> &eacute;quipes</div>
+    <div class="score-pill">11 juin &rarr; 19 juil. <span>2026</span></div>
+  </div>
+  <div class="maj-bar" style="margin-top:14px">
+    <div class="maj-pill">Derni&egrave;re MAJ&nbsp;: <span id="maj-display">—</span></div>
+    <div class="maj-pill">&#9917; <span id="nb-matchs-display">0</span> / 104 matchs jou&eacute;s</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab on" onclick="showTab('equipes',this)">&#127942; Classement</button>
+  <button class="tab"    onclick="showTab('faq',this)">&#10067; FAQ</button>
+  <button class="tab"    onclick="showTab('admin',this)">&#9881;&#65039; MAJ scores</button>
+</div>
+
+<!-- CLASSEMENT -->
+<div id="view-equipes" class="view on">
+  <div class="podium" id="podium"></div>
+  <table class="rank-table">
+    <thead><tr>
+      <th>Rang</th>
+      <th>&Eacute;quipe</th>
+      <th style="text-align:right">Score moyen</th>
+      <th style="text-align:right">&Eacute;vol.</th>
+    </tr></thead>
+    <tbody id="rank-body"></tbody>
+  </table>
+</div>
+
+<!-- FAQ -->
+<div id="view-faq" class="view">
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Rechercher une question..." oninput="filterFAQ()">
+  </div>
+  <div id="faq-container">
+
+    <div class="section-title">&#128640;&nbsp; Rejoindre la ligue</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Comment rejoindre la ligue JuSt World Cup 2K26&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">T&eacute;l&eacute;charge l'appli <strong>Mon Petit Prono (MPP)</strong> et utilise le code <span class="hl">UCA3EX68</span> ou ce lien&nbsp;: <a href="https://mpp.go.link/8ZnpI" target="_blank">https://mpp.go.link/8ZnpI</a>. C'est <strong>100&nbsp;% gratuit</strong> et &ccedil;a prend 2&nbsp;minutes&nbsp;!<br>Tu peux aussi rester en <strong>version web</strong> sur <a href="https://mpp.football" target="_blank">mpp.football</a>.</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Je peux m'inscrire apr&egrave;s le d&eacute;but de la Coupe du Monde (11 juin)&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Oui, mais <strong>pas de pronos r&eacute;troactifs</strong> - tu pars avec 0 point sur les matchs d&eacute;j&agrave; jou&eacute;s. Inscris-toi avant le <span class="hl">11 juin</span> pour maximiser tes chances&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Je peux choisir n'importe quel pseudo MPP&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Oui, totalement libre&nbsp;! C'est la grande nouveaut&eacute; 2026&nbsp;: tu remplis le <strong>formulaire de correspondance</strong> et on fait le lien nous-m&ecirc;mes. Fini la chasse aux pseudos&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Je peux avoir plusieurs profils dans la ligue&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Non - <strong>un seul profil par Justin(e)</strong>. Les doublons seront supprim&eacute;s d&egrave;s qu'on les identifie.</div>
+    </div>
+
+    <div class="section-title">&#127942;&nbsp; P&eacute;rim&egrave;tre &amp; &eacute;quipes</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Qui peut participer &agrave; la JuSt World Cup 2K26&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Le concours est ouvert &agrave; <strong>tous les collaborateurs du groupe Julhiet Sterwen</strong>, incluant les marques&nbsp;:<ul><li><strong>Julhiet Sterwen</strong> (toutes BU)</li><li><strong>(RE)Set</strong></li><li><strong>PerformanSe</strong></li><li><strong>HRConseil</strong></li></ul>On parle d'&laquo;&nbsp;&eacute;quipe&nbsp;&raquo; pour tenir compte des sp&eacute;cificit&eacute;s de chaque marque. Le canal de communication officiel est l'espace Teams <strong>&laquo;&nbsp;JuSt Activit&eacute;s&nbsp;&raquo;</strong> (et Just Teams), auquel tous les collaborateurs ont acc&egrave;s.</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Je n'ai pas d'&eacute;quipe JS, je fais quoi&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Deux options&nbsp;:<ul><li>Suis ton c&oelig;ur et rejoins l'&eacute;quipe de ton choix (avant le 11 juin, pas de changement ensuite&nbsp;!)</li><li>Joue sous la banni&egrave;re <strong>Fonction Support</strong> - en 2024, c'est l'Interne qui a trust&eacute; la 1&egrave;re place &agrave; l'Euro &#128521;</li></ul></div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Peut-on changer d'&eacute;quipe en cours de tournoi&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open"><strong>Non.</strong> Le choix est d&eacute;finitif &agrave; partir du coup d'envoi du 1er match (11 juin). Choisis bien&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>C'est quoi le r&ocirc;le d'Ambassadeur(rice) d'&eacute;quipe&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">L'Ambassadeur(rice) est le <strong>relais officiel</strong> de son &eacute;quipe pendant toute la Coupe du Monde. Son r&ocirc;le&nbsp;:<ul><li>Relayer les classements dans le canal Teams de son &eacute;quipe</li><li>Motiver les membres &agrave; faire leurs pronos avant chaque match</li><li>Faire le lien avec l'organisation en cas de question ou probl&egrave;me</li></ul>En 2024, les &eacute;quipes avec un ambassadeur actif ont obtenu de <strong>meilleurs taux de participation</strong>. <span class="hl">Volontaires&nbsp;? Un MP suffit&nbsp;!</span></div>
+    </div>
+
+    <div class="section-title">&#128203;&nbsp; Formulaire de correspondance</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Pourquoi je dois remplir le formulaire&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Sans le formulaire, on ne peut pas te rattacher &agrave; ton &eacute;quipe JS &rarr; <strong>tu es invisible dans le classement</strong>. 30&nbsp;secondes chrono, c'est obligatoire&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>J'ai chang&eacute; mon pseudo MPP apr&egrave;s avoir rempli le formulaire, que faire&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Pr&eacute;viens <strong>Marion Mignot ou Donald Hadegbe</strong> en MP - sinon tes points seront perdus dans la nature&nbsp;&#128123;</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>O&ugrave; trouver le formulaire&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Le lien est dans la communication de lancement sur le canal <strong>JuSt Activit&eacute;s</strong> de Teams. Si tu ne le trouves plus, envoie un MP &agrave; Marion ou Donald.</div>
+    </div>
+
+    <div class="section-title">&#127942;&nbsp; Classement &amp; r&eacute;compenses</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Comment fonctionne le classement des &eacute;quipes&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Par <strong>score moyen</strong> = total des points &divide; nombre de membres. Contrairement &agrave; 2024, on ne fait <strong>plus la somme totale</strong> - ce qui &eacute;vitait de favoriser les grandes &eacute;quipes. Si un membre ne fait pas de prono sur un match, <strong>cela tire la moyenne de l'&eacute;quipe vers le bas</strong>. Chaque prono compte&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Mon &eacute;quipe a peu de membres, on a une chance&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Plus que jamais&nbsp;! Avec la moyenne, une petite &eacute;quipe tr&egrave;s engag&eacute;e bat une grande &eacute;quipe de joueurs irr&eacute;guliers. <span class="hl">Qualit&eacute; &gt; quantit&eacute;</span>&nbsp;&#128521;</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Combien de membres minimum pour qu'une &eacute;quipe soit class&eacute;e&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open"><span class="hl">3 membres</span> minimum. En dessous, l'&eacute;quipe n'appara&icirc;t pas au classement officiel.</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Quelles sont les r&eacute;compenses&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Avec un budget de <strong>300&nbsp;&euro;</strong>, deux prix sont pr&eacute;vus&nbsp;:<ul><li>&#127949; <strong>Troph&eacute;e &eacute;quipe gagnante</strong> - l'&eacute;quipe avec le meilleur score moyen</li><li>&#127885; <strong>Maillot au choix</strong> pour le participant ayant le <strong>plus grand nombre de points individuels</strong> toutes &eacute;quipes confondues - tu choisis le maillot de l'&eacute;quipe que tu soutiens &#9917;<br><em>Et si tu es 1er au g&eacute;n&eacute;ral mais que ton &eacute;quipe n'a pas gagn&eacute;... on pense aussi &agrave; toi&nbsp;&#128521;</em></li></ul></div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>&Agrave; quelle fr&eacute;quence le classement est mis &agrave; jour&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open"><strong>2 fois par semaine - lundi et vendredi</strong>. Le classement est partag&eacute; sur Teams. N'oublie pas de faire tes pronos avant chaque match&nbsp;!</div>
+    </div>
+
+    <div class="section-title">&#9917;&nbsp; R&egrave;gles MPP</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Comment &ccedil;a marche MPP&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Tu pronostics le <strong>score exact</strong> de chaque match avant le coup d'envoi. Score exact = maximum de points. Bon r&eacute;sultat = points quand m&ecirc;me. Les cotes influencent le gain - pronostiquer une surprise rapporte plus&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Les phases finales comptent plus&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Oui&nbsp;! MPP applique des <strong>multiplicateurs</strong> sur les &eacute;liminatoires&nbsp;:<ul><li>x1,5 en 8es de finale</li><li>x2 en quarts de finale</li><li>x2,5 en demi-finales</li><li><span class="hl">x3 en finale</span> &#128293;</li></ul>Un tournoi peut se retourner jusqu'au bout&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>La Coupe du Monde 2026 c'est combien de matchs&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open"><span class="hl">104 matchs</span> avec <strong>48 &eacute;quipes</strong>, r&eacute;partis entre &#127482;&#127480;&nbsp;USA, &#127464;&#127462;&nbsp;Canada et &#127474;&#127485;&nbsp;Mexique - du <strong>11 juin au 19 juillet 2026</strong>.</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Pas besoin d'&ecirc;tre expert en foot&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Absolument pas&nbsp;! En 2024, ce sont souvent les <strong>non-initi&eacute;s qui ont tout rafl&eacute;</strong> &#128579; Les cotes et un peu de chance font parfois mieux que l'analyse. Lance-toi&nbsp;!</div>
+    </div>
+
+    <div class="section-title">&#128295;&nbsp; Probl&egrave;mes &amp; questions</div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>Mon pseudo n'appara&icirc;t pas dans le classement JS&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Tu n'as probablement pas rempli le formulaire (lien dans la comm de lancement sur Teams). Si tu l'as rempli et que tu n'apparais toujours pas, envoie un MP &agrave; <strong>Marion ou Donald</strong>.</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>J'ai oubli&eacute; de faire mon prono avant un match, je peux le faire apr&egrave;s&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">Non - MPP <strong>ferme les pronos au coup d'envoi</strong> de chaque match. Active les notifications de l'appli pour ne pas oublier&nbsp;!</div>
+    </div>
+
+    <div class="item">
+      <button onclick="toggle(this)"><span>L'appli MPP est disponible sur quel support&nbsp;?</span><div class="arrow open">&#9650;</div></button>
+      <div class="answer open">MPP est disponible sur <strong>iOS et Android</strong>, et en version web sur <a href="https://mpp.football" target="_blank">mpp.football</a>. 100&nbsp;% gratuit.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="view-admin" class="view">
+  <div class="admin-box">
+    <div class="admin-section-title">&#128197;&nbsp; Informations g&eacute;n&eacute;rales</div>
+    <div class="admin-meta">
+      <label>Matchs jou&eacute;s&nbsp;:</label>
+      <input type="number" id="nb-matchs-input" class="inp" style="width:90px" min="0" max="104" placeholder="0">
+    </div>
+    <div class="admin-section-title">&#127942;&nbsp; Scores &eacute;quipes</div>
+    <table class="admin-table">
+      <thead><tr>
+        <th>&Eacute;quipe</th>
+        <th>Score moyen</th>
+        <th>&Eacute;volution</th>
+      </tr></thead>
+      <tbody id="admin-tbody"></tbody>
+    </table>
+    <button class="btn-update" onclick="updateScores()">&#9889;&nbsp; Mettre &agrave; jour le classement</button>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>&#127942; <strong>JuSt World Cup 2K26</strong> &nbsp;&middot;&nbsp; Code <strong>UCA3EX68</strong> &nbsp;&middot;&nbsp; <a href="https://mpp.go.link/8ZnpI" target="_blank">Rejoindre &rarr;</a></p>
+  <p style="margin-top:6px">&#127482;&#127480;&#127464;&#127462;&#127474;&#127485; 11 juin &rarr; 19 juillet 2026 &nbsp;&middot;&nbsp; 104 matchs &nbsp;&middot;&nbsp; 48 &eacute;quipes</p>
+</footer>
+
+<script>
+var ADMIN_HASH = "9e882466b4c77689a0ec0c8fff06efb8608b02e57b3c2a5d25eed7dcb2b88712";
+function hashSHA256(str){
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(str))
+    .then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');});
+}
+var adminUnlocked = false;
+
+function checkPwd(){
+  hashSHA256(document.getElementById('pwd-input').value).then(function(h){
+    if(h===ADMIN_HASH){
+      adminUnlocked=true;
+      document.getElementById('lock-overlay').style.display='none';
+      renderAdmin();
+    } else {
+      document.getElementById('pwd-err').textContent='Mot de passe incorrect.';
+      document.getElementById('pwd-input').value='';
+    }
+  });
+}
+
+function closeLock(){
+  document.getElementById('lock-overlay').style.display='none';
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on')});
+  document.querySelector('.tab').classList.add('on');
+  document.getElementById('view-equipes').classList.add('on');
+  renderEquipes();
+}
+
+var STATE={
+  majDate:"", nbMatchs:0,
+  equipes:[
+    {name:"ARC",score:0,evo:0},{name:"ASSUR",score:0,evo:0},
+    {name:"BaaS",score:0,evo:0},{name:"BLING",score:0,evo:0},
+    {name:"BOOST",score:0,evo:0},{name:"CHANG",score:0,evo:0},
+    {name:"DI4B",score:0,evo:0},{name:"E2U",score:0,evo:0},
+    {name:"FinS",score:0,evo:0},{name:"FLOW",score:0,evo:0},
+    {name:"Fonction Support",score:0,evo:0},{name:"GROW",score:0,evo:0},
+    {name:"HRA",score:0,evo:0},{name:"HRConseil",score:0,evo:0},
+    {name:"LEMAN",score:0,evo:0},{name:"LUXE",score:0,evo:0},
+    {name:"MANAI",score:0,evo:0},{name:"MARFI",score:0,evo:0},
+    {name:"ORPER",score:0,evo:0},{name:"PEEx",score:0,evo:0},
+    {name:"PerformanSe",score:0,evo:0},{name:"PUBLIC",score:0,evo:0},
+    {name:"(RE)Set",score:0,evo:0},{name:"TRANSVERSE",score:0,evo:0},
+  ]
+};
+
+function save(){localStorage.setItem('just2k26',JSON.stringify(STATE))}
+function load(){var d=localStorage.getItem('just2k26');if(d){try{var s=JSON.parse(d);s.equipes.forEach(function(e){e.score=Number(e.score)||0;e.evo=Number(e.evo)||0;});STATE=s;}catch(e){}}}
+load();
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on')});
+  if(btn) btn.classList.add('on');
+  document.getElementById('view-'+id).classList.add('on');
+  if(id==='equipes') renderEquipes();
+  if(id==='admin'){
+    if(!adminUnlocked){
+      document.getElementById('lock-overlay').style.display='flex';
+      document.getElementById('pwd-input').value='';
+      document.getElementById('pwd-err').textContent='';
+    } else renderAdmin();
+  }
+}
+
+function renderEquipes(){
+  document.getElementById('maj-display').textContent=STATE.majDate||'—';
+  document.getElementById('nb-matchs-display').textContent=STATE.nbMatchs||0;
+  var sorted=STATE.equipes.slice().sort(function(a,b){var d=Number(b.score)-Number(a.score);return d!==0?d:a.name.localeCompare(b.name);});
+  var max=sorted[0]?sorted[0].score:1;
+  var withScore=sorted.filter(function(e){return e.score>0});
+  // podium: 2e à gauche, 1er au centre, 3e à droite
+  var podDefs=[
+    {idx:1, cls:'pod-2', medal:'&#129352;', label:'2e'},
+    {idx:0, cls:'pod-1', medal:'&#129351;', label:'1er'},
+    {idx:2, cls:'pod-3', medal:'&#129353;', label:'3e'}
+  ];
+  var podHtml='';
+  podDefs.forEach(function(def){
+    var c=withScore[def.idx]; if(!c) return;
+    var exPod=withScore.filter(function(x){return x.score===c.score;}).length>1?' — ex æq.':'';podHtml+='<div class="pod '+def.cls+'"><div class="pod-base"><div class="pod-rank">'+def.medal+'</div><div class="pod-name">'+c.name+'</div><div class="pod-score">'+c.score.toFixed(1)+'</div></div><div class="pod-label">'+def.label+exPod+'</div></div>';
+  });
+  document.getElementById('podium').innerHTML=podHtml;
+  var tbody='';
+  var realRank=1;
+  sorted.forEach(function(c,i){
+    if(i===0){ realRank=1; }
+    else if(c.score!==sorted[i-1].score){ realRank=i+1; }
+    var rank=realRank,cls=rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
+    var evo=c.evo>0?'<span class="evo-up">&#9650;</span>':c.evo<0?'<span class="evo-down">&#9660;</span>':'<span class="evo-same">—</span>';
+    var pct=max>0?(c.score/max*100):0;
+    tbody+='<tr class="rank-row"><td class="rank-num '+cls+'">'+(rank===1?'&#129351;':rank===2?'&#129352;':rank===3?'&#129353;':rank)+'</td><td class="rank-name">'+c.name+'</td><td class="rank-score">'+(c.score>0?c.score.toFixed(1):'—')+'</td><td class="rank-evo">'+evo+'</td></tr>';
+    tbody+='<tr><td colspan="4" class="bar-cell"><div class="bar-wrap"><div class="bar-fill" style="width:'+pct+'%"></div></div></td></tr>';
+  });
+  document.getElementById('rank-body').innerHTML=tbody;
+}
+
+function renderAdmin(){
+  if(STATE.nbMatchs) document.getElementById('nb-matchs-input').value=STATE.nbMatchs;
+  var html='';
+  STATE.equipes.forEach(function(c,i){
+    html+='<tr><td>'+c.name+'</td>';
+    html+='<td><input class="inp-sm" type="number" step="0.1" min="0" id="score-'+i+'" value="'+(c.score||'')+'" placeholder="0.0"></td>';
+    html+='<td><select class="inp-sm" id="evo-'+i+'"><option value="0"'+(c.evo===0?' selected':'')+'>— stable</option><option value="1"'+(c.evo===1?' selected':'')+'>&#9650; hausse</option><option value="-1"'+(c.evo===-1?' selected':'')+'>&#9660; baisse</option></select></td></tr>';
+  });
+  document.getElementById('admin-tbody').innerHTML=html;
+}
+
+function updateScores(){
+  var now=new Date();
+  STATE.majDate=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})+' à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  STATE.nbMatchs=parseInt(document.getElementById('nb-matchs-input').value)||0;
+  STATE.equipes.forEach(function(c,i){
+    c.score=Number(parseFloat(document.getElementById('score-'+i).value))||0;
+    c.evo=parseInt(document.getElementById('evo-'+i).value)||0;
+  });
+  save();
+  adminUnlocked=true;
+  document.getElementById('lock-overlay').style.display='none';
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on')});
+  document.querySelector('.tab').classList.add('on');
+  document.getElementById('view-equipes').classList.add('on');
+  renderEquipes();
+  alert('✅ Classement mis à jour !');
+}
+
+function toggle(btn){
+  var answer=btn.nextElementSibling,arrow=btn.querySelector('.arrow');
+  if(answer.classList.contains('open')){answer.classList.remove('open');arrow.classList.remove('open');arrow.innerHTML='&#9660;';}
+  else{answer.classList.add('open');arrow.classList.add('open');arrow.innerHTML='&#9650;';}
+}
+
+function filterFAQ(){
+  var val=document.getElementById('search').value.toLowerCase();
+  if(!val){
+    document.querySelectorAll('.item,.section-title').forEach(function(el){el.style.display='';});
+    return;
+  }
+  var sections=document.querySelectorAll('.section-title');
+  sections.forEach(function(sec){
+    var next=sec.nextElementSibling,found=false;
+    while(next&&!next.classList.contains('section-title')){
+      if(next.classList.contains('item')){
+        var show=next.textContent.toLowerCase().indexOf(val)>=0;
+        next.style.display=show?'':'none';
+        if(show)found=true;
+      }
+      next=next.nextElementSibling;
+    }
+    sec.style.display=found?'':'none';
+  });
+}
+
+renderEquipes();
+</script>
+</body>
+</html>
